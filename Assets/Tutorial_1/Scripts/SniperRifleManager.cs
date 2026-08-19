@@ -54,5 +54,14 @@ public class SniperRifleManager : MonoBehaviour
         shootAnim.SetTrigger("Shoot");
 
         //Parabolic shoot code here
+        GameObject bullet = Instantiate(bulletPref, shootPoint.position, shootPoint.rotation);
+        ParabolicBullet parabolicBullet = bullet.GetComponent<ParabolicBullet>();
+
+        if (bulletScript)
+        {
+            bulletScript.Initialize(shootPointm, shootSpeed, gravityForce);
+
+        }
+        Destroy(bullet, bulletLifeTime);
     }
 }
