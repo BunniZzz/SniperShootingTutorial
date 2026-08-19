@@ -11,7 +11,7 @@ public class ParabolicBullet : MonoBehaviour
     private Vector3 startForward;
 
     private bool isInitialized = false;
-    private float time = -1;
+    private float startTime = -1;
 
     public void Initialize(Transform startPoint, float speed, float gravity)
     {
@@ -22,10 +22,10 @@ public class ParabolicBullet : MonoBehaviour
         isInitialized = true;
     }
 
-    private Vector3 FindPointOnparabola()
+    private Vector3 FindPointOnParabola(float time)
     {
         Vector3 point = startPosition + startForward * speed * time;
-        Vector3 gravityVec = Vector3.down*gravity * time * time;
+        Vector3 gravityVec = Vector3.down * gravity * time * time;
         return point + gravityVec;
     }
 
@@ -38,25 +38,21 @@ public class ParabolicBullet : MonoBehaviour
     }
 
 
-
-
-
     private void FixedUpdate()
     {
-        if(!isInitialized)
+        if (!isInitialized)
             return;
-        if(time < 0)
-            time = 0;
+        if (startTime < 0)
+            startTime = Time.time;
 
         float currentTime = Time.time - startTime;
         float nextTime = currentTime + Time.fixedDeltaTime;
 
-        Vector3 currentPoint = FindPointOnparabola(currentTime);
-        Vector3 nextPoint = FindPointOnparabola(nextTime);
+        Vector3 currentPoint = FindPointOnParabola(currentTime);
+        Vector3 nextPoint = FindPointOnParabola(nextTime);
 
         if (CastRayBetweenPoints(currentPoint, nextPoint, out RaycastHit hit))
         {
-            transform.position = hit.point;
             // Handle collision here (e.g., apply damage, play effects)
             Destroy(gameObject); // Destroy the bullet on impact
         }
@@ -70,16 +66,11 @@ public class ParabolicBullet : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (!isInitialized|| time < 0)
-            return;
+        if (!isInitialized || startTime < 0) return;
 
         float currentTime = Time.time - startTime;
-        Vector3 currentPoint = FindPointOnparabola(currentTime);
+        Vector3 currentPoint = FindPointOnParabola(currentTime);
         transform.position = currentPoint;
-
-
-
-
 
     }
 }
