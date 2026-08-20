@@ -37,6 +37,20 @@ public class ParabolicBullet : MonoBehaviour
         return Physics.Raycast(startPoint, direction, out hit, distance);
     }
 
+    private void OnHit(RaycastHit hit)
+    {
+        ShootableObject shootableObject = hit.transform.GetComponent<ShootableObject>();
+        if (shootableObject)
+        {
+            shootableObject.OnHit(hit);
+        }
+        print("hit: " + hit.transform.name);
+
+        Destroy(gameObject); // Destroy the bullet on impact
+    }
+
+
+
 
     private void FixedUpdate()
     {
@@ -45,22 +59,29 @@ public class ParabolicBullet : MonoBehaviour
         if (startTime < 0)
             startTime = Time.time;
 
+        RaycastHit hit;
         float currentTime = Time.time - startTime;
+        float prevTime = currentTime - Time.fixedDeltaTime;
         float nextTime = currentTime + Time.fixedDeltaTime;
+
 
         Vector3 currentPoint = FindPointOnParabola(currentTime);
         Vector3 nextPoint = FindPointOnParabola(nextTime);
 
-        if (CastRayBetweenPoints(currentPoint, nextPoint, out RaycastHit hit))
+        if (prevTime > 0)
         {
-            // Handle collision here (e.g., apply damage, play effects)
-            Destroy(gameObject); // Destroy the bullet on impact
-        }
-        else
-        {
-            transform.position = nextPoint;
+            Vector3 prevPoint = FindPointOnParabola(prevTime);
+            if (CastRayBetweenPoints(prevPoint, nextPoint, out hit))
+            {
+                OnHit(hit);
+            }
         }
 
+        if (CastRayBetweenPoints(currentPoint, nextPoint, out hit))
+        {
+            // Handle collision here (e.g., apply damage, play effects)
+            OnHit(hit);
+        }
     }
 
     // Update is called once per frame
