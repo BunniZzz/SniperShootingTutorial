@@ -49,9 +49,6 @@ public class ParabolicBullet : MonoBehaviour
         Destroy(gameObject); // Destroy the bullet on impact
     }
 
-
-
-
     private void FixedUpdate()
     {
         if (!isInitialized)
@@ -71,7 +68,7 @@ public class ParabolicBullet : MonoBehaviour
         if (prevTime > 0)
         {
             Vector3 prevPoint = FindPointOnParabola(prevTime);
-            if (CastRayBetweenPoints(prevPoint, nextPoint, out hit))
+            if (CastRayBetweenPoints(prevPoint, currentPoint, out hit))
             {
                 OnHit(hit);
             }

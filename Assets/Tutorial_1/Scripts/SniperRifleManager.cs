@@ -10,7 +10,7 @@ public class SniperRifleManager : MonoBehaviour
     public Animator gunAnim;
     public Animator shootAnim;
     float T = 0;
-    float reloadTime = 1f;
+    public float reloadTime = 1f;
 
     [Space]
     public float shootSpeed = 20f;
